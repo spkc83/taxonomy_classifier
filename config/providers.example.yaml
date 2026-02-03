@@ -1,0 +1,43 @@
+# Provider Configuration Example
+# Copy this file to providers.yaml and update with your settings
+
+# OpenAI Provider
+openai:
+  provider_type: openai
+  model: gpt-4
+  api_key: ${OPENAI_API_KEY}  # Set via environment variable
+  base_url: null  # Use default OpenAI API endpoint
+  temperature: 0.0
+
+# Anthropic Provider
+anthropic:
+  provider_type: anthropic
+  model: claude-3-opus-20240229
+  api_key: ${ANTHROPIC_API_KEY}
+  base_url: null
+  temperature: 0.0
+
+# Google Provider (Gemini)
+google:
+  provider_type: google
+  model: gemini-pro
+  api_key: ${GOOGLE_API_KEY}
+  base_url: null
+  temperature: 0.0
+
+# Cohere Provider
+cohere:
+  provider_type: cohere
+  model: command
+  api_key: ${COHERE_API_KEY}
+  base_url: null
+  temperature: 0.0
+
+# On-Premises / Custom Endpoint Example
+# Use this for self-hosted models or alternative API endpoints
+onprem:
+  provider_type: openai  # Most on-prem solutions use OpenAI-compatible API
+  model: llama-2-70b
+  api_key: ${ONPREM_API_KEY}  # May not be required for local deployments
+  base_url: http://localhost:8000/v1  # Your local endpoint
+  temperature: 0.0

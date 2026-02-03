@@ -1,0 +1,27 @@
+aisuite
+numpy
+sentence-transformers
+datasets
+pytest
+pytest-cov
+
+# API Framework
+fastapi
+uvicorn[standard]
+pydantic-settings
+httpx
+
+# Authentication
+python-jose[cryptography]
+passlib[bcrypt]
+authlib
+
+# LLM Provider SDKs
+openai
+anthropic
+google-generativeai
+cohere
+huggingface_hub
+
+# Optional dependencies
+# setfit  # For SetFitBackend - fine-tunable sentence embeddings
