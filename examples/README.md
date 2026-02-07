@@ -8,7 +8,7 @@ This directory contains example scripts demonstrating different aspects of the t
 |---------|-------------|--------------|------|
 | [01_zero_shot_semantic_classification.py](#1-zero-shot-semantic-classification) | Basic classification using pre-trained embeddings | `sentence-transformers` | ~1 min |
 | [02_setfit_finetuning_comparison.py](#2-setfit-fine-tuning-comparison) | Compare baseline vs fine-tuned performance | `setfit`, `datasets` | ~30 min |
-| [03_memory_efficient_training.py](#3-memory-efficient-training) | Resource-constrained training | `setfit`, `datasets` | ~10 min |
+| [03_memory_efficient_training.py](#3-memory-efficient-training) | TREC question classification with BGE-small | `setfit`, `datasets` | ~10 min |
 
 ## Prerequisites
 
@@ -106,29 +106,25 @@ Exact Match Accuracy                 54.1%         75.8%       +21.7%
 
 **File:** `03_memory_efficient_training.py`
 
-Optimized training for resource-constrained environments (8GB RAM, 4GB GPU).
+Uses the TREC Question Classification dataset (6 coarse → 50 fine classes) with `BAAI/bge-small-en-v1.5` for high-quality embeddings in a small footprint. Baseline accuracy exceeds 80% on coarse labels without any fine-tuning.
 
 **Key Concepts:**
-- Smaller, efficient model (`all-MiniLM-L6-v2`)
-- Controlled dataset sizes
-- Explicit memory management
-- Garbage collection between operations
+- High-quality model (`BAAI/bge-small-en-v1.5`, 33M params)
+- TREC dataset with natural 2-level hierarchy
+- Pre-computed embedding index (candidates embedded once, reused per query)
+- Sequential model loading to stay within 4GB VRAM
+- Explicit memory management with garbage collection
 
 **Run:**
 ```bash
-python examples/03_memory_efficient_training.py
+python examples/03_memory_efficient_training.py            # uses saved model if exists
+python examples/03_memory_efficient_training.py --retrain  # force retraining
 ```
 
-**Resource Limits:**
-- Max 200 training samples
-- Max 100 test samples
-- 4 samples per class
-- Batch size: 16
-
 **Best For:**
-- Development on laptops
-- Limited GPU memory (4GB)
-- Quick experimentation
+- Demonstrating strong baseline performance (80%+ without fine-tuning)
+- Development on laptops with limited GPU (4GB)
+- Understanding the training → evaluation workflow
 - CI/CD pipelines
 
 ---
@@ -255,9 +251,16 @@ trainer.train(dataset=dataset, text_column="text", label_column="label")
 ```python
 from taxonomy_framework.embeddings import SentenceTransformerBackend
 
-# Use different model
+# BGE model with query prefix (recommended for retrieval tasks)
 backend = SentenceTransformerBackend(
-    model_name="sentence-transformers/all-mpnet-base-v2"  # Larger, more accurate
+    model_name="BAAI/bge-small-en-v1.5",
+    query_prefix="Represent this sentence: ",
+    device="cuda",
+)
+
+# Or a larger model without prefix
+backend = SentenceTransformerBackend(
+    model_name="sentence-transformers/all-mpnet-base-v2",
 )
 ```
 
@@ -302,8 +305,9 @@ export OPENAI_API_KEY=sk-your-key
 
 ### Slow Performance
 
-- Use `all-MiniLM-L6-v2` instead of larger models
-- Enable GPU: `device="cuda"`
+- Use `BAAI/bge-small-en-v1.5` (good quality/speed balance) or `all-MiniLM-L6-v2` (fastest)
+- Enable GPU: pass `device="cuda"` to `SentenceTransformerBackend`
+- Call `embedder.build_index()` once to pre-compute candidate embeddings
 - Reduce `top_k` in retrieval
 - Use batch classification
 

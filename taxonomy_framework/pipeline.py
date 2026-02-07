@@ -82,6 +82,9 @@ class HybridClassifier:
             f"{n.name}: {n.description or ''}" for n in self.entry_branches
         ]
         
+        if llm is not None:
+            self.embedder.build_index(self.entry_texts)
+        
         self._leaf_nodes: List[CategoryNode] = []
         self._leaf_texts: List[str] = []
         if llm is None:
@@ -119,6 +122,7 @@ class HybridClassifier:
                     collect_leaves(child)
         
         collect_leaves(self.taxonomy.root)
+        self.embedder.build_index(self._leaf_texts)
         self.logger.info(f"Cached {len(self._leaf_nodes)} leaf categories for embedding-only mode")
     
     def _classify_embedding_only(self, text: str) -> Union[ClassificationResult, AbstainResult]:

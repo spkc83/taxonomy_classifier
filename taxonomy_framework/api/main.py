@@ -6,7 +6,7 @@ from taxonomy_framework.api.routes import auth_router, classify_router, health_r
 app = FastAPI(
     title="Taxonomy Classifier API",
     description="API for hierarchical text classification",
-    version="1.0.0",
+    version="1.1.0",
     docs_url="/docs",
     redoc_url="/redoc",
 )

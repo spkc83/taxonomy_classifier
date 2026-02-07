@@ -91,7 +91,7 @@ class TestSetFitBackendWithMock:
                 backend.model = mock_model
                 
                 backend.embed_text("hello world")
-                mock_model.model_body.encode.assert_called_once_with("hello world")
+                mock_model.model_body.encode.assert_called_once_with("hello world", normalize_embeddings=True)
 
     def test_embed_batch_calls_model_body_encode(self):
         """embed_batch should use model.model_body.encode()."""
@@ -106,7 +106,7 @@ class TestSetFitBackendWithMock:
                 
                 texts = ["text1", "text2"]
                 backend.embed_batch(texts)
-                mock_model.model_body.encode.assert_called_once_with(texts)
+                mock_model.model_body.encode.assert_called_once_with(texts, normalize_embeddings=True)
 
 
 class TestSetFitBackendInitialization:

@@ -20,7 +20,7 @@ class TestHealthEndpoint:
         response = client.get("/health")
         data = response.json()
         assert "version" in data
-        assert data["version"] == "1.0.0"
+        assert data["version"] == "1.1.0"
 
     def test_health_response_structure(self):
         response = client.get("/health")

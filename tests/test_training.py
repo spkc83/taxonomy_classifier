@@ -805,7 +805,7 @@ class TestSetFitTrainerIntegration:
                     # 5. Verify the loaded backend can embed text
                     result = backend.embed_text("test text")
                     assert isinstance(result, np.ndarray)
-                    mock_loaded_model.model_body.encode.assert_called_with("test text")
+                    mock_loaded_model.model_body.encode.assert_called_with("test text", normalize_embeddings=True)
 
     def test_trainer_integrates_with_embedder(self):
         """Test loaded backend works in EnsembleEmbedder."""
@@ -815,7 +815,7 @@ class TestSetFitTrainerIntegration:
         # Set up mock for loaded SetFit model
         mock_loaded_model = MagicMock()
         # Return different embeddings for different texts
-        mock_loaded_model.model_body.encode.side_effect = lambda x: (
+        mock_loaded_model.model_body.encode.side_effect = lambda x, normalize_embeddings=False: (
             np.array([[0.9, 0.1], [0.1, 0.9], [0.5, 0.5]]) if isinstance(x, list) 
             else np.array([0.8, 0.2])
         )
